@@ -1,0 +1,81 @@
+# The following types define the data model of the example service
+# based on which the GraphQL API is generated
+
+type User @model {
+  id: ID! @isUnique # read-only (managed by Graphcool)
+  createdAt: DateTime! # read-only (managed by Graphcool)
+  updatedAt: DateTime! # read-only (managed by Graphcool)
+  items: [Item!]! @relation(name: "UserItems")
+  username: String!
+  email: String! @isUnique
+  password: String!
+  chats: [Chat!]! @relation(name: "UserChats")
+  profilePic: String
+}
+
+type Item @model {
+  id: ID! @isUnique
+  title: String!
+  description: String
+  price: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  subCategory: SubCategory! @relation(name: "ItemCategory")
+  location: Location! @relation(name: "ItemLocation")
+  user: User! @relation(name: "UserItems")
+  images: [String!]!
+  postStatus: DateTime
+  chats: [Chat!]! @relation(name: "ItemChats")
+}
+
+enum OwnerType {
+  User
+  Item
+}
+
+type Category @model {
+  id: ID! @isUnique
+  title: String!
+  subs: [SubCategory!]! @relation(name: "ItemSubCategory")
+}
+
+type SubCategory @model {
+  id: ID! @isUnique
+  title: String!
+  category: Category! @relation(name: "ItemSubCategory")
+  items: [Item!]! @relation(name: "ItemCategory")
+}
+
+type Location @model {
+  id: ID! @isUnique
+  title: String!
+  item: [Item!]! @relation(name: "ItemLocation")
+}
+
+type Chat @model {
+  id: ID! @isUnique
+  item: Item! @relation(name: "ItemChats")
+  participants: [User!]! @relation(name: "UserChats")
+  messages: [Message!]! @relation(name: "ChatMessages")
+}
+
+type Message @model {
+  id: ID! @isUnique
+  from: String!
+  content: String!
+  createdAt: DateTime!
+  chat: Chat @relation(name: "ChatMessages")
+}
+# added by email-password template: (please uncomment)
+
+# added by google template: (please uncomment)
+# type User @model {
+#   # Required system field:
+#   id: ID! @isUnique # read-only (managed by Graphcool)
+
+#   # Optional system fields (remove if not needed):
+#   createdAt: DateTime! # read-only (managed by Graphcool)
+#   updatedAt: DateTime! # read-only (managed by Graphcool)
+
+# googleUserId: String @isUnique
+# }
